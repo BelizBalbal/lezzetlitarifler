@@ -1,0 +1,294 @@
+  <!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tarif Bulucu ve Yemek Planlayıcı</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <i class="bi bi-egg-fried me-2"></i>Lezzetli Tarifler
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#" id="homeLink">Ana Sayfa</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" id="favoritesLink">Favorilerim</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" id="shoppingListLink">Alışveriş Listesi</a>
+                    </li>
+                </ul>
+                <div class="d-flex" id="authButtons">
+                    <button class="btn btn-outline-light me-2" data-bs-toggle="modal" data-bs-target="#loginModal">Giriş Yap</button>
+                    <button class="btn btn-light" data-bs-toggle="modal" data-bs-target="#signupModal">Üye Ol</button>
+                </div>
+                <div class="d-flex d-none" id="userInfo">
+                    <div class="dropdown">
+                        <button class="btn btn-outline-light dropdown-toggle" type="button" id="userDropdown" data-bs-toggle="dropdown">
+                            <i class="bi bi-person-circle me-1"></i>
+                            <span id="username">Kullanıcı</span>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="#"><i class="bi bi-gear me-2"></i>Ayarlar</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="#" id="logoutBtn"><i class="bi bi-box-arrow-right me-2"></i>Çıkış Yap</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Ana Bölüm -->
+    <div class="container mt-4">
+        <!-- Ana Sayfa -->
+        <div id="homePage">
+            <!-- Giriş Bölümü -->
+           <div class="welcome-section rounded-3 text-center">
+    <div class="container py-4">
+        <div id="sloganCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="2500">
+            <div class="carousel-inner">
+                <div class="carousel-item active">
+                    <h1 class="display-5 fw-bold">Kaliteli Malzemeler</h1>
+                </div>
+                <div class="carousel-item">
+                    <h1 class="display-5 fw-bold">Unutulmaz Lezzetler</h1>
+                </div>
+            </div>
+        </div>
+        <p class="lead mt-3">Elinizde bulunan malzemeleri girin, size uygun tarifleri bulalım.</p>
+    </div>
+</div>
+
+            <!-- Malzeme Ekleme Yeri -->
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h3 class="card-title mb-3">Malzemelerinizi Ekleyin</h3>
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" id="ingredientInput" placeholder="Malzeme ekleyin (örn. domates, soğan, peynir)">
+                        <button class="btn btn-primary" id="addIngredientBtn">Ekle</button>
+                    </div>
+                    <div id="ingredientTags" class="mb-3"></div>
+                    <button class="btn btn-primary w-100" id="findRecipesBtn">Tarifleri Bul</button>
+                </div>
+            </div>
+
+            <!-- Tarif Sonuçları -->
+            <h3 class="mb-3">Önerilen Tarifler</h3>
+            <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4" id="recipeResults">
+            </div>
+        </div>
+
+        <!-- Favori Kısmı -->
+        <div id="favoritesPage" class="d-none">
+            <h2 class="mb-4">Favori Tarifleriniz</h2>
+            <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4" id="favoriteRecipes">
+            </div>
+            <div class="text-center mt-4 d-none" id="noFavoritesMessage">
+                <div class="py-5">
+                    <i class="bi bi-heart text-muted" style="font-size: 4rem;"></i>
+                    <h4 class="mt-3">Henüz favori tarifiniz yok</h4>
+                    <p class="text-muted">Beğendiğiniz tarifleri favorilere ekleyerek burada görüntüleyebilirsiniz.</p>
+                    <button class="btn btn-primary mt-2" id="browseRecipesBtn">Tariflere Göz At</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Alışveriş listesi -->
+        <div id="shoppingListPage" class="d-none">
+            <h2 class="mb-4">Alışveriş Listeniz</h2>
+            <div class="card">
+                <div class="card-body">
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" id="shoppingItemInput" placeholder="Alışveriş listesine ekle...">
+                        <button class="btn btn-primary" id="addShoppingItemBtn">Ekle</button>
+                    </div>
+                    <ul class="list-group" id="shoppingList">
+                    </ul>
+                    <div class="text-center mt-4 d-none" id="emptyShoppingListMessage">
+                        <i class="bi bi-cart text-muted" style="font-size: 3rem;"></i>
+                        <p class="mt-3">Alışveriş listeniz boş</p>
+                    </div>
+                    <div class="d-flex justify-content-between mt-3">
+                        <button class="btn btn-outline-danger" id="clearShoppingListBtn">Listeyi Temizle</button>
+                        <button class="btn btn-outline-primary" id="printShoppingListBtn">
+                            <i class="bi bi-printer me-1"></i> Yazdır
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Giriş Kısmı (Login) -->
+    <div class="modal fade" id="loginModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Giriş Yap</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="loginForm" class="auth-form">
+                        <div class="mb-3">
+                            <label for="loginEmail" class="form-label">E-posta</label>
+                            <input type="email" class="form-control" id="loginEmail" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="loginPassword" class="form-label">Şifre</label>
+                            <input type="password" class="form-control" id="loginPassword" required>
+                        </div>
+                        <div class="mb-3 form-check">
+                            <input type="checkbox" class="form-check-input" id="rememberMe">
+                            <label class="form-check-label" for="rememberMe">Beni hatırla</label>
+                        </div>
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary">Giriş Yap</button>
+                        </div>
+                        <div class="text-center mt-3">
+                            <a href="#" class="text-decoration-none">Şifremi unuttum</a>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer justify-content-center">
+                    <p class="mb-0">Hesabınız yok mu? <a href="#" data-bs-toggle="modal" data-bs-target="#signupModal" data-bs-dismiss="modal">Üye Olun</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Üye Olma -->
+    <div class="modal fade" id="signupModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Üye Ol</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="signupForm" class="auth-form">
+                        <div class="mb-3">
+                            <label for="signupName" class="form-label">Ad Soyad</label>
+                            <input type="text" class="form-control" id="signupName" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="signupEmail" class="form-label">E-posta</label>
+                            <input type="email" class="form-control" id="signupEmail" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="signupPassword" class="form-label">Şifre</label>
+                            <input type="password" class="form-control" id="signupPassword" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="signupPasswordConfirm" class="form-label">Şifre Tekrar</label>
+                            <input type="password" class="form-control" id="signupPasswordConfirm" required>
+                        </div>
+                        <div class="mb-3 form-check">
+                            <input type="checkbox" class="form-check-input" id="termsAgree" required>
+                            <label class="form-check-label" for="termsAgree">
+                                <a href="#" class="text-decoration-none">Kullanım şartlarını</a> kabul ediyorum
+                            </label>
+                        </div>
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary">Üye Ol</button>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer justify-content-center">
+                    <p class="mb-0">Zaten hesabınız var mı? <a href="#" data-bs-toggle="modal" data-bs-target="#loginModal" data-bs-dismiss="modal">Giriş Yapın</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tarif Detayları -->
+    <div class="modal fade" id="recipeDetailModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="recipeDetailTitle">Tarif Detayı</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-5 mb-3">
+                            <img id="recipeDetailImage" src="" alt="Tarif Görseli" class="img-fluid rounded">
+                            <div class="d-flex justify-content-between align-items-center mt-2">
+                                <div>
+                                    <span class="badge bg-success me-1"><i class="bi bi-clock me-1"></i><span id="recipeDetailTime"></span></span>
+                                    <span class="badge bg-info"><i class="bi bi-people me-1"></i><span id="recipeDetailServings"></span> kişilik</span>
+                                </div>
+                                <button class="btn btn-outline-warning" id="recipeDetailFavoriteBtn">
+                                    <i class="bi bi-heart"></i> Favorilere Ekle
+                                </button>
+                            </div>
+                        </div>
+                        <div class="col-md-7">
+                            <ul class="nav nav-tabs" id="recipeTabs" role="tablist">
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link active" id="ingredients-tab" data-bs-toggle="tab" data-bs-target="#ingredients" type="button" role="tab">Malzemeler</button>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" id="instructions-tab" data-bs-toggle="tab" data-bs-target="#instructions" type="button" role="tab">Hazırlanışı</button>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" id="nutrition-tab" data-bs-toggle="tab" data-bs-target="#nutrition" type="button" role="tab">Besin Değerleri</button>
+                                </li>
+                            </ul>
+                            <div class="tab-content" id="recipeTabContent">
+                                <div class="tab-pane fade show active" id="ingredients" role="tabpanel">
+                                    <ul class="list-group list-group-flush" id="recipeDetailIngredients">
+                                        <!-- Malzemeler -->
+                                    </ul>
+                                    <button class="btn btn-sm btn-outline-primary mt-3" id="addToShoppingListBtn">
+                                        <i class="bi bi-cart-plus me-1"></i> Alışveriş Listesine Ekle
+                                    </button>
+                                </div>
+                                <div class="tab-pane fade" id="instructions" role="tabpanel">
+                                    <ol id="recipeDetailInstructions">
+                                        <!-- Hazırlanış -->
+                                    </ol>
+                                </div>
+                                <div class="tab-pane fade" id="nutrition" role="tabpanel">
+                                    <div class="table-responsive">
+                                        <table class="table table-sm">
+                                            <tbody id="recipeDetailNutrition">
+                                                <!-- Besin Değerleri -->
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kapat</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+     <footer>
+        <p class="" style="text-align: center; padding: 20px;  color: rgb(0, 0, 0);">
+           Firdevs Eren, Halime Ebrar Akyol, Beliz Balbal, Süeda Azra Çakır, Hatice Tecir -Web Teknolojileri Projesi-
+        </p>
+     </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
